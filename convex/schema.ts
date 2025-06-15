@@ -6,7 +6,7 @@ export default defineSchema({
     threadId: v.string(),
     title: v.string(),
     createdAt: v.number(),
-    updatedA: v.number(),
+    updatedAt: v.number(),
     lastMessageAt: v.number(),
     archived: v.boolean(),
     generationState: v.union(
@@ -20,8 +20,8 @@ export default defineSchema({
     pinned: v.boolean(),
     parentThreadId: v.optional(v.id("threads")),
     branchOff: v.boolean(),
-  })
-    .index("by_userId", ["userId"])
+    titleSetByUser: v.boolean(),
+  }).index("by_userId", ["userId"])
     .index("by_threadId_and_userId", ["threadId", "userId"])
     .searchIndex("by_title", {
       searchField: "title",
@@ -32,7 +32,9 @@ export default defineSchema({
     messageId: v.string(),
     threadId: v.id("threads"),
     userId: v.string(),
+    fileKey: v.string(),
     modelId: v.string(),
+    type: v.string(),
     content: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -49,7 +51,9 @@ export default defineSchema({
         message: v.string(),
       })
     ),
-  }),
+  }).index("by_threadId", ["threadId"])
+    .index("by_userId", ["userId"])
+    .index("by_threadId_and_userId", ["threadId", "userId"]),
 
   attachments: defineTable({
     attachmentId: v.string(),
@@ -66,7 +70,6 @@ export default defineSchema({
       v.literal("deleted")
     ),
     uploadedAt: v.number(),
-  })
-    .index("by_threadId", ["threadId"])
+  }).index("by_threadId", ["threadId"])
     .index("by_userId", ["userId"]),
 });
